@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import API from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [isRegister, setIsRegister] = useState(false);
   const [form, setForm] = useState({
@@ -26,12 +28,12 @@ function Login() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>{isRegister ? "Register" : "Login"}</h2>
+      <h2>{isRegister ? t("register") : t("login")}</h2>
 
       <form onSubmit={submitHandler}>
         {isRegister && (
           <input
-            placeholder="Name"
+            placeholder={t("name")}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
@@ -41,7 +43,7 @@ function Login() {
         <br />
 
         <input
-          placeholder="Email"
+          placeholder={t("email")}
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
@@ -50,7 +52,7 @@ function Login() {
         <br />
 
         <input
-          placeholder="Password"
+          placeholder={t("password")}
           type="password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -60,12 +62,12 @@ function Login() {
         <br />
 
         <button type="submit">
-          {isRegister ? "Register" : "Login"}
+          {isRegister ? t("register") : t("login")}
         </button>
       </form>
 
       <button onClick={() => setIsRegister(!isRegister)}>
-        {isRegister ? "Already have account? Login" : "Create new account"}
+        {isRegister ? t("alreadyHaveAccount") : t("createAccount")}
       </button>
     </div>
   );

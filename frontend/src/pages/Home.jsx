@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import API from "../services/api";
 import { useCart } from "../context/CartContext";
-import { useTranslation } from "react-i18next";
 
 function Home() {
   const [products, setProducts] = useState([]);
   const { addToCart, cartItems } = useCart();
   const { t, i18n } = useTranslation();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isArabic = i18n.language === "ar";
 
   useEffect(() => {
     fetchProducts();
@@ -18,7 +20,10 @@ function Home() {
     setProducts(data);
   };
 
-  const isArabic = i18n.language === "ar";
+  const logout = () => {
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
 
   return (
     <div
@@ -53,24 +58,20 @@ function Home() {
 
           <Link to="/orders">{t("orders")}</Link>
 
-          <Link to="/admin">{t("admin")}</Link>
+          {user?.role === "admin" && (
+            <Link to="/admin">{t("admin")}</Link>
+          )}
 
           <Link to="/login">{t("login")}</Link>
 
-          <button
-            onClick={() =>
-              i18n.changeLanguage(isArabic ? "en" : "ar")
-            }
-          >
-            {isArabic ? "English" : "العربية"}
-          </button>
+          {user && <button onClick={logout}>{t("logout")}</button>}
         </div>
       </div>
 
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4,1fr)",
+          gridTemplateColumns: "repeat(4, 1fr)",
           gap: "20px",
         }}
       >
