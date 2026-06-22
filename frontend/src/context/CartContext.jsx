@@ -1,6 +1,5 @@
-import { createContext, useContext, useState } from "react";
-
-const CartContext = createContext();
+import { useState } from "react";
+import { CartContext } from "./cartContextObject";
 
 // eslint-disable-next-line react/prop-types
 export const CartProvider = ({ children }) => {
@@ -38,5 +37,3 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
-
-export const useCart = () => useContext(CartContext);

@@ -62,57 +62,57 @@ function Admin() {
   };
 
   if (loading) {
-    return <p style={{ padding: "20px" }}>{t("loadingOrders")}</p>;
+    return (
+      <main className="page">
+        <div className="empty-state">{t("loadingOrders")}</div>
+      </main>
+    );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>{t("adminOrders")}</h2>
+    <main className="page">
+      <section className="page-heading">
+        <span className="eyebrow">{t("admin")}</span>
+        <h1>{t("adminOrders")}</h1>
+        <p>{t("adminSubtitle")}</p>
+      </section>
 
-      {message && <p>{message}</p>}
+      {message && <p className="notice">{message}</p>}
 
-      {orders.length === 0 && <p>{t("noOrders")}</p>}
+      {orders.length === 0 && <div className="empty-state">{t("noOrders")}</div>}
 
-      {orders.map((order) => (
-        <div
-          key={order._id}
-          style={{
-            border: "1px solid #ccc",
-            padding: "15px",
-            marginBottom: "10px",
-          }}
-        >
-          <h3>{t("orderNumber", { id: order._id.slice(-6) })}</h3>
+      <section className="admin-list">
+        {orders.map((order) => (
+          <article className="admin-card" key={order._id}>
+            <div>
+              <h3>{t("orderNumber", { id: order._id.slice(-6) })}</h3>
+              <p>
+                {t("customer")}: {order.user?.name || order.user?.email}
+              </p>
+            </div>
 
-          <p>
-            {t("customer")}: {order.user?.name || order.user?.email}
-          </p>
+            <div className="admin-meta">
+              <span>{order.totalPrice} EGP</span>
+              <span>{t(`paymentMethods.${order.paymentMethod}`)}</span>
+            </div>
 
-          <p>
-            {t("total")}: {order.totalPrice} EGP
-          </p>
-
-          <p>
-            {t("payment")}:{" "}
-            {t(`paymentMethods.${order.paymentMethod}`)}
-          </p>
-
-          <label>
-            {t("changeStatus")}{" "}
-            <select
-              value={order.status}
-              onChange={(e) => updateStatus(order._id, e.target.value)}
-            >
-              {ORDER_STATUSES.map((status) => (
-                <option key={status} value={status}>
-                  {t(`statuses.${status}`)}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      ))}
-    </div>
+            <label className="field compact">
+              <span>{t("changeStatus")}</span>
+              <select
+                value={order.status}
+                onChange={(e) => updateStatus(order._id, e.target.value)}
+              >
+                {ORDER_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {t(`statuses.${status}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </article>
+        ))}
+      </section>
+    </main>
   );
 }
 

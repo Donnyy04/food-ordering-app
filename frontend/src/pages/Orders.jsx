@@ -33,39 +33,42 @@ function Orders() {
   }, [t]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>{t("orders")}</h2>
+    <main className="page">
+      <section className="page-heading">
+        <span className="eyebrow">{t("brandTagline")}</span>
+        <h1>{t("orders")}</h1>
+      </section>
 
-      {message && <p>{message}</p>}
+      {message && <p className="notice">{message}</p>}
 
-      {orders.length === 0 && !message && <p>{t("noOrders")}</p>}
+      {orders.length === 0 && !message && (
+        <div className="empty-state">{t("noOrders")}</div>
+      )}
 
-      {orders.map((order) => (
-        <div
-          key={order._id}
-          style={{
-            border: "1px solid #ccc",
-            padding: "15px",
-            marginBottom: "10px",
-          }}
-        >
-          <h3>{t("orderNumber", { id: order._id.slice(-6) })}</h3>
+      <section className="order-grid">
+        {orders.map((order) => (
+          <article className="order-card" key={order._id}>
+            <div className="card-header">
+              <h3>{t("orderNumber", { id: order._id.slice(-6) })}</h3>
+              <span className={`status status-${order.status.replaceAll(" ", "-").toLowerCase()}`}>
+                {t(`statuses.${order.status}`)}
+              </span>
+            </div>
 
-          <p>
-            {t("status")}: {t(`statuses.${order.status}`)}
-          </p>
-
-          <p>
-            {t("total")}: {order.totalPrice} EGP
-          </p>
-
-          <p>
-            {t("payment")}:{" "}
-            {t(`paymentMethods.${order.paymentMethod}`)}
-          </p>
-        </div>
-      ))}
-    </div>
+            <dl className="details-list">
+              <div>
+                <dt>{t("total")}</dt>
+                <dd>{order.totalPrice} EGP</dd>
+              </div>
+              <div>
+                <dt>{t("payment")}</dt>
+                <dd>{t(`paymentMethods.${order.paymentMethod}`)}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+      </section>
+    </main>
   );
 }
 

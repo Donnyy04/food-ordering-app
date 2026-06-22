@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/useCart";
 import API from "../services/api";
 
 const PAYMENT_METHODS = ["Cash on Delivery", "Online Payment"];
@@ -53,58 +53,68 @@ function Cart() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>{t("cartCheckout")}</h2>
+    <main className="page">
+      <section className="page-heading">
+        <span className="eyebrow">{t("cart")}</span>
+        <h1>{t("cartCheckout")}</h1>
+        <p>{t("cartSubtitle")}</p>
+      </section>
 
-      {cartItems.length === 0 && <p>{t("emptyCart")}</p>}
+      <section className="checkout-layout">
+        <div className="stack">
+          {cartItems.length === 0 && (
+            <div className="empty-state">{t("emptyCart")}</div>
+          )}
 
-      {cartItems.map((item) => (
-        <div
-          key={item._id}
-          style={{
-            border: "1px solid #ccc",
-            marginBottom: "10px",
-            padding: "10px",
-          }}
-        >
-          <h3>{isArabic ? item.name_ar : item.name_en}</h3>
-          <p>
-            {item.quantity} x {item.price} EGP
-          </p>
-          <button onClick={() => removeFromCart(item._id)}>
-            {t("remove")}
-          </button>
+          {cartItems.map((item) => (
+            <article className="line-item" key={item._id}>
+              <img src={item.image} alt={isArabic ? item.name_ar : item.name_en} />
+              <div>
+                <h3>{isArabic ? item.name_ar : item.name_en}</h3>
+                <p>
+                  {item.quantity} x {item.price} EGP
+                </p>
+              </div>
+              <button
+                className="btn btn-ghost danger"
+                onClick={() => removeFromCart(item._id)}
+              >
+                {t("remove")}
+              </button>
+            </article>
+          ))}
         </div>
-      ))}
 
-      <h3>
-        {t("total")}: {total} EGP
-      </h3>
+        <aside className="summary-card">
+          <h2>{t("total")}</h2>
+          <strong>{total} EGP</strong>
 
-      {cartItems.length > 0 && (
-        <>
-          <h3>{t("paymentMethod")}</h3>
+          {cartItems.length > 0 && (
+            <>
+              <label className="field">
+                <span>{t("paymentMethod")}</span>
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                >
+                  {PAYMENT_METHODS.map((method) => (
+                    <option key={method} value={method}>
+                      {t(`paymentMethods.${method}`)}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <select
-            value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-          >
-            {PAYMENT_METHODS.map((method) => (
-              <option key={method} value={method}>
-                {t(`paymentMethods.${method}`)}
-              </option>
-            ))}
-          </select>
+              <button className="btn btn-primary wide" onClick={placeOrder}>
+                {t("placeOrder")}
+              </button>
+            </>
+          )}
 
-          <br />
-          <br />
-
-          <button onClick={placeOrder}>{t("placeOrder")}</button>
-        </>
-      )}
-
-      {message && <p>{message}</p>}
-    </div>
+          {message && <p className="notice">{message}</p>}
+        </aside>
+      </section>
+    </main>
   );
 }
 
